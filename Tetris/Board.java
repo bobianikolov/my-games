@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class Board extends JPanel implements ActionListener{
     private static final int BOARDWIDTH = 10;
@@ -27,7 +29,7 @@ public class Board extends JPanel implements ActionListener{
     private void initializationBoard(Tetris parent){
         setFocusable(true);
         currentPiece = new Shape();
-        timer = new Timer(400, this);
+        timer = new Timer(200, this);
         timer.start();
 
         statusBar = parent.getStatusBar();
@@ -90,15 +92,17 @@ public class Board extends JPanel implements ActionListener{
     }
 
     private void doDrawing(Graphics g){
+
         Dimension size = getSize();
-        int boardTop = (int) size.getHeight() - BOARDWIDTH * squareHeight();
+        int boardTop = (int) size.getHeight() - BOARDHEIGHT * squareHeight();
 
         for (int i = 0; i < BOARDHEIGHT; ++i) {
             for (int j = 0; j < BOARDWIDTH; ++j) {
 
-                Tetrominoes shape = shapeAt(j, BOARDWIDTH - i -1);
+                Tetrominoes shape = shapeAt(j, BOARDHEIGHT - i - 1);
+
                 if(shape != Tetrominoes.NOSHAPE){
-                    drawSquare(g, 0 + j * squareWidth(),boardTop + 1 * squareHeight(), shape);
+                    drawSquare(g, j * squareWidth(),boardTop + i * squareHeight(), shape);
                 }
             }
         }
@@ -107,7 +111,7 @@ public class Board extends JPanel implements ActionListener{
             for (int i = 0; i < 4; ++i) {
                 int x = currentX + currentPiece.x(i);
                 int y = currentY + currentPiece.y(i);
-                drawSquare(g, 0 + x * squareWidth(), boardTop + (BOARDHEIGHT - y - 1) * squareHeight(),
+                drawSquare(g, x * squareWidth(), boardTop + (BOARDHEIGHT - y - 1) * squareHeight(),
                         currentPiece.getPieceShape());
             }
         }
@@ -123,9 +127,8 @@ public class Board extends JPanel implements ActionListener{
         int newY = currentY;
 
         while (newY > 0){
-            if(!tryMove(currentPiece, currentX, newY - 1)){
+            if(!tryMove(currentPiece, currentX, newY - 1))
                 break;
-            }
             --newY;
         }
         pieceDropped();
@@ -146,7 +149,7 @@ public class Board extends JPanel implements ActionListener{
     private void pieceDropped(){
         for (int i = 0; i < 4; ++i) {
             int x = currentX + currentPiece.x(i);
-            int y = currentY + currentPiece.y(i);
+            int y = currentY - currentPiece.y(i);
             board[(y * BOARDWIDTH) + x] = currentPiece.getPieceShape();
         }
         removeFullLines();
@@ -216,7 +219,7 @@ public class Board extends JPanel implements ActionListener{
             }
 
             if (numFullLines > 0) {
-                numFullLines += numFullLines;
+                numLinesRemoved += numFullLines;
                 statusBar.setText(String.valueOf(numLinesRemoved));
                 isFallingFinished = true;
                 currentPiece.setShape(Tetrominoes.NOSHAPE);
@@ -249,5 +252,52 @@ public class Board extends JPanel implements ActionListener{
         g.drawLine(x + squareWidth() - 1, y + squareHeight() - 1,
                 x + squareWidth() - 1, y + 1);
     }
+
+     class TAdapter extends KeyAdapter{
+
+        @Override
+        public void keyPressed(KeyEvent event){
+
+            if(!isStarted || currentPiece.getPieceShape() == Tetrominoes.NOSHAPE){
+                return;
+            }
+
+            int keyCode = event.getKeyCode();
+
+            if(keyCode == 'p' || keyCode == 'P'){
+                pause();
+                return;
+            }
+
+            if(isPaused){
+                return;
+            }
+
+            switch (keyCode){
+                case KeyEvent.VK_LEFT:
+                    tryMove(currentPiece,currentX - 1,currentY);
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    tryMove(currentPiece,currentX + 1,currentY);
+                    break;
+                case KeyEvent.VK_DOWN:
+                    tryMove(currentPiece.rotateRight(),currentX,currentY);
+                    break;
+                case KeyEvent.VK_UP:
+                    tryMove(currentPiece.rotateLeft(),currentX,currentY);
+                    break;
+                case KeyEvent.VK_SPACE:
+                    dropDown();
+                    break;
+                case 'd':
+                    oneLineDown();
+                    break;
+                case 'D':
+                    oneLineDown();
+                    break;
+            }
+        }
+    }
 }
+
 

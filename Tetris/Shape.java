@@ -25,8 +25,8 @@ public class Shape {
                 {{1, -1}, {0, -1}, {0, 0}, {0, 1}},
         };
 
-        for (int row = 0; row < this.coordinates.length; row++) {
-            for (int col = 0; col < this.coordinates[row].length; col++) {
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 2; ++col) {
                 this.coordinates[row][col] = this.coordinatesTable[shape.ordinal()][row][col];
             }
         }
@@ -87,7 +87,7 @@ public class Shape {
         Shape result = new Shape();
         result.pieceShape = pieceShape;
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; ++i) {
             result.setX(i, y(i));
             result.setY(i, -x(i));
         }
@@ -102,7 +102,7 @@ public class Shape {
         Shape result = new Shape();
         result.pieceShape = pieceShape;
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; ++i) {
             result.setX(i, -y(i));
             result.setY(i, x(i));
         }
