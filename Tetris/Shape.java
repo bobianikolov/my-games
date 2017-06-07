@@ -1,4 +1,4 @@
-package Tetris;
+package tetris;
 
 import java.util.Random;
 
@@ -14,7 +14,7 @@ public class Shape {
     }
 
     public void setShape(Tetrominoes shape) {
-        coordinatesTable = new int[][][]{
+        this.coordinatesTable = new int[][][]{
                 {{0, 0}, {0, 0}, {0, 0}, {0, 0}},
                 {{0, -1}, {0, 0}, {-1, 0}, {-1, 1}},
                 {{0, -1}, {0, 0}, {1, 0}, {1, 1}},

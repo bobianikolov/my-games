@@ -1,4 +1,4 @@
-package Tetris;
+package tetris;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,16 +11,18 @@ public class Tetris extends JFrame{
     }
 
     private void initializationOfFrames(){
-        statusBar = new JLabel(" 0");
-        add(statusBar, BorderLayout.SOUTH);
+        this.statusBar = new JLabel("Scores: 0");
+        add(this.statusBar, BorderLayout.SOUTH);
+        setBackground(Color.black);
         Board board = new Board(this);
         add(board);
         board.start();
 
-        setSize(200,400);
+        setSize(196,400);
         setTitle("Tetris");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setResizable(false);
     }
 
     public JLabel getStatusBar(){
